@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tier List</title>
     <link rel="stylesheet" href="style.css" />
+    <script type="module" src="main.js"></script>
   </head>
   <body>
     <header id="top-header">
@@ -12,36 +13,86 @@
     </header>
 
     <section class="tier">
-        <div class="row">
-            <aside class="label" style="--level: var(--color-s);">
-                <span contenteditable="true">S</span>
-            </aside>
-        </div>
-        <div class="row">
-            <aside class="label" style="--level: var(--color-a);">
-                <span contenteditable="true">A</span>
-            </aside>
-        </div>
-        <div class="row">
-            <aside class="label" style="--level: var(--color-b);">
-                <span contenteditable="true">B</span>
-            </aside>
-        </div>
-        <div class="row">
-            <aside class="label" style="--level: var(--color-c);">
-                <span contenteditable="true">C</span>
-            </aside>
-        </div>
-        <div class="row">
-            <aside class="label" style="--level: var(--color-d);">
-                <span contenteditable="true">D</span>
-            </aside>
-        </div>
-        <div class="row">
-            <aside class="label" style="--level: var(--color-e);">
-                <span contenteditable="true">E</span>
-            </aside>
-        </div>
-    </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-s)">
+          <span contenteditable="true">S</span>
+        </aside>
+      </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-a)">
+          <span contenteditable="true">A</span>
+        </aside>
+      </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-b)">
+          <span contenteditable="true">B</span>
+        </aside>
+      </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-c)">
+          <span contenteditable="true">C</span>
+        </aside>
+      </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-d)">
+          <span contenteditable="true">D</span>
+        </aside>
+      </div>
+      <div class="row">
+        <aside class="label" style="--level: var(--color-e)">
+          <span contenteditable="true">E</span>
+        </aside>
+      </div>
+    </section>
+
+    <footer id="selector">
+      <section id="selector-buttons">
+        <label>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-circle-plus"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+            <path d="M9 12h6" />
+            <path d="M12 9v6" />
+          </svg>
+          <input type="file" id="image-input" hidden />
+        </label>
+
+        <button>
+          <!--
+tags: [refresh, repeat, update, sync, loading]
+category: Arrows
+version: "1.93"
+unicode: "f3ae"
+-->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M19.933 13.041a8 8 0 1 1 -9.925 -8.788c3.899 -1 7.935 1.007 9.425 4.747"
+            />
+            <path d="M20 4v5h-5" />
+          </svg>
+        </button>
+      </section>
+    </footer>
   </body>
 </html>
