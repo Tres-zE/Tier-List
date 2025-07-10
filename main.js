@@ -24,6 +24,19 @@ const $$ = (el) => document.querySelectorAll(el);
 const imageInput = $('#image-input');
 const itemsSection = $('#selector-items');
 
+function createItem(src) {
+  const imgElement = document.createElement('img'); // Crea un nuevo elemento de imagen.
+  imgElement.draggable = true; // Permite que la imagen sea arrastrable.
+  imgElement.src = src; // Establece la fuente de la imagen al resultado de la lectura del archivo.
+  imgElement.className = 'item-image'; // Asigna una clase CSS para estilizar la imagen.
+
+  imgElement.addEventListener('dragstart', handleDragStart); // Agrega un evento para manejar el inicio del arrastre de la imagen.
+  imgElement.addEventListener('dragend', handleDragEnd); // Agrega un evento para manejar el final del arrastre de la imagen.
+  itemsSection.appendChild(imgElement); // Agrega la imagen al contenedor de elementos en el DOM.
+
+  return imgElement; // Devuelve el elemento de imagen creado para su posible uso posterior.
+}
+
 // Esta función se ejecuta cuando el usuario selecciona una imagen desde su dispositivo.
 imageInput.addEventListener('change', (event) => {
   const [file] = event.target.files; // Obtiene el primer archivo seleccionado por el usuario.
@@ -31,12 +44,64 @@ imageInput.addEventListener('change', (event) => {
     const reader = new FileReader(); // Crea un nuevo objeto FileReader para leer el archivo.
 
     reader.onload = (eventReader) => {
-      const imgElement = document.createElement('img'); // Crea un nuevo elemento de imagen.
-      imgElement.src = eventReader.target.result; // Establece la fuente de la imagen al resultado de la lectura del archivo.
-      imgElement.className = 'item-image'; // Asigna una clase CSS para estilizar la imagen.
-      itemsSection.appendChild(imgElement); // Agrega la imagen al contenedor de elementos en el DOM.
+      createItem(eventReader.target.result); // Cuando la lectura del archivo se complete, crea un nuevo elemento de imagen con la fuente del archivo leído.
     };
 
     reader.readAsDataURL(file); // Lee el archivo como una URL de datos (data URL).
   }
 });
+
+let draggedElement = null; // Variable para almacenar el elemento que se está arrastrando.
+let sourceContainer = null; // Variable para almacenar el contenedor de origen del elemento arrastrado.
+
+const rows = $$('.tier .row'); // Selecciona todas las filas de la clase 'tier row' en el DOM.
+
+rows.forEach((row) => {
+  row.addEventListener('drop', handleDrop); // Agrega un evento para manejar el evento de soltar (drop) en cada fila.
+  row.addEventListener('dragover', handleDragOver); // Agrega un evento para manejar el evento de arrastrar sobre (dragover) en cada fila.
+  row.addEventListener('dradleave', handleDragLeave); // Agrega un evento para manejar el evento de salir del arrastre (dragleave) en cada fila.
+});
+
+function handleDrop(event) {
+  event.preventDefault(); // Previene el comportamiento predeterminado del navegador al soltar un elemento.
+
+  const { currentTarget, dataTransfer } = event; // Obtiene el elemento actual donde se suelta el elemento arrastrado y los datos del arrastre.
+
+  if (sourceContainer && draggedElement) {
+    sourceContainer.removeChild(draggedElement); // Elimina el elemento arrastrado del contenedor de origen.
+
+    if (draggedElement) {
+      const src = dataTransfer.getData('text/plain'); // Obtiene la fuente de la imagen arrastrada desde los datos del arrastre.
+      const imgElement = createItem(src); // Crea un nuevo elemento de imagen con la fuente obtenida.
+      currentTarget.appendChild(imgElement); // Agrega el nuevo elemento de imagen al contenedor actual donde se soltó el elemento arrastrado.
+    }
+  }
+}
+
+function handleDragOver(event) {
+  event.preventDefault(); // Previene el comportamiento predeterminado del navegador al arrastrar un elemento sobre otro.
+
+  const { currentTarget } = event; // Obtiene el elemento actual sobre el que se está arrastrando.
+  if (sourceContainer === currentTarget) {
+    return; // Si el contenedor de origen es el mismo que el contenedor actual, no hace nada.
+  }
+  currentTarget.classList.add('drag-over'); // Agrega una clase CSS para indicar que el contenedor está listo para recibir un elemento arrastrado.
+}
+
+function handleDragLeave(event) {
+  event.preventDefault(); // Previene el comportamiento predeterminado del navegador al salir del área de arrastre.
+
+  currentTarget.classList.remove('drag-over'); // Elimina la clase CSS que indica que el contenedor está listo para recibir un elemento arrastrado.
+}
+
+function handleDragStart(event) {
+  draggedElement = event.target; // Almacena el elemento que se está arrastrando.
+  sourceContainer = draggedElement.parentNode; // Obtiene el contenedor del elemento arrastrado.
+  event.dataTransfer.setData('text/plain', draggedElement.src); // Establece los datos del arrastre, en este caso, la fuente de la imagen arrastrada.
+}
+
+function handleDragEnd(event) {
+  console.log('Drag ended', event.target); // Imprime un mensaje en la consola cuando termina el arrastre.
+  draggedElement = null; // Limpia la variable al finalizar el arrastre.
+  sourceContainer = null; // Limpia el contenedor de origen al finalizar el arrastre.
+}
