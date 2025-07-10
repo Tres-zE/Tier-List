@@ -31,3 +31,17 @@ imageInput.click();
 Esto hace el trabajo sin ningun problema.
 
 La segunda forma tambien es conocida sin embargo no muy utilizada, y esto favorece al no cargar el proyecto con mucho javascript y funciona cambiando en el html el elmento button por label y dentro del label se añade input y hace el mismo trabajo.
+
+Tercera parte del proyecto:
+
+Termine de agregar los botones, estilarlos; ademas de agregar un section en el index para crear una "caja" donde iran las imagenes seleccionadas por el usuario.
+El usuario podra elegir las imagenes que el quiera rankear.
+Usé algo llamado miducof, basicamente son funciones abreviadas para seleccionar elementos en el DOM:
+
+const $ = (el) => document.querySelector(el);
+const $$ = (el) => document.querySelectorAll(el);
+
+const imageInput = $('#image-input');
+const itemsSection = $('#selector-items');
+
+Esto con la intencion de escribrir menos codigo o mas bien dejar de escribir document.querySelector cada vez que vamos a interactuar con algun elemento.
