@@ -59,8 +59,12 @@ const rows = $$('.tier .row'); // Selecciona todas las filas de la clase 'tier r
 rows.forEach((row) => {
   row.addEventListener('drop', handleDrop); // Agrega un evento para manejar el evento de soltar (drop) en cada fila.
   row.addEventListener('dragover', handleDragOver); // Agrega un evento para manejar el evento de arrastrar sobre (dragover) en cada fila.
-  row.addEventListener('dradleave', handleDragLeave); // Agrega un evento para manejar el evento de salir del arrastre (dragleave) en cada fila.
+  row.addEventListener('dragleave', handleDragLeave); // Agrega un evento para manejar el evento de salir del arrastre (dragleave) en cada fila.
 });
+
+itemsSection.addEventListener('dragover', handleDragOver); // Agrega un evento para manejar el evento de arrastrar sobre (dragover) en la sección de elementos.
+itemsSection.addEventListener('drop', handleDrop); // Agrega un evento para manejar el evento de soltar (drop) en la sección de elementos.
+itemsSection.addEventListener('dragleave', handleDragLeave); // Agrega un evento para manejar el evento de salir del arrastre (dragleave) en la sección de elementos.
 
 function handleDrop(event) {
   event.preventDefault(); // Previene el comportamiento predeterminado del navegador al soltar un elemento.
@@ -69,29 +73,41 @@ function handleDrop(event) {
 
   if (sourceContainer && draggedElement) {
     sourceContainer.removeChild(draggedElement); // Elimina el elemento arrastrado del contenedor de origen.
-
-    if (draggedElement) {
-      const src = dataTransfer.getData('text/plain'); // Obtiene la fuente de la imagen arrastrada desde los datos del arrastre.
-      const imgElement = createItem(src); // Crea un nuevo elemento de imagen con la fuente obtenida.
-      currentTarget.appendChild(imgElement); // Agrega el nuevo elemento de imagen al contenedor actual donde se soltó el elemento arrastrado.
-    }
   }
+
+  if (draggedElement) {
+    const src = dataTransfer.getData('text/plain'); // Obtiene la fuente de la imagen arrastrada desde los datos del arrastre.
+    const imgElement = createItem(src); // Crea un nuevo elemento de imagen con la fuente obtenida.
+    currentTarget.appendChild(imgElement); // Agrega el nuevo elemento de imagen al contenedor actual donde se soltó el elemento arrastrado.
+  }
+  currentTarget.classList.remove('drag-over'); // Elimina la clase CSS que indica que el contenedor está listo para recibir un elemento arrastrado.
+  currentTarget.querySelector('.drag-preview')?.remove(); // Elimina la vista previa del elemento arrastrado, si existe.
 }
 
 function handleDragOver(event) {
   event.preventDefault(); // Previene el comportamiento predeterminado del navegador al arrastrar un elemento sobre otro.
 
-  const { currentTarget } = event; // Obtiene el elemento actual sobre el que se está arrastrando.
+  const { currentTarget, dataTransfer } = event; // Obtiene el elemento actual sobre el que se está arrastrando.
   if (sourceContainer === currentTarget) {
     return; // Si el contenedor de origen es el mismo que el contenedor actual, no hace nada.
   }
   currentTarget.classList.add('drag-over'); // Agrega una clase CSS para indicar que el contenedor está listo para recibir un elemento arrastrado.
+
+  const dragPreview = document.querySelector('.drag-preview'); // Busca un elemento con la clase 'drag-preview' para mostrar una vista previa del elemento arrastrado.
+
+  if (draggedElement && !dragPreview) {
+    const previewElement = draggedElement.cloneNode(true); // Clona el elemento arrastrado para mostrar una vista previa.
+    previewElement.classList.add('drag-preview'); // Agrega una clase CSS para estilizar la vista previa.
+    currentTarget.appendChild(previewElement); // Agrega la vista previa al contenedor actual.
+  }
 }
 
 function handleDragLeave(event) {
   event.preventDefault(); // Previene el comportamiento predeterminado del navegador al salir del área de arrastre.
 
+  const { currentTarget } = event; // Obtiene el elemento actual del evento.
   currentTarget.classList.remove('drag-over'); // Elimina la clase CSS que indica que el contenedor está listo para recibir un elemento arrastrado.
+  currentTarget.querySelector('.drag-preview')?.remove(); // Elimina la vista previa del elemento arrastrado, si existe.
 }
 
 function handleDragStart(event) {

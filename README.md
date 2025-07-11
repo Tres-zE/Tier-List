@@ -64,3 +64,8 @@ Ahora toca refactorizar una parte del codigo, en la cual se crea una funcion cre
 
 Tambien creamos funciones para que haga el arrastre y soltar la imagen en el lugar que queramos.
 Por el momento ya se puede seleccionar, arrastrar y colocar las donde queramos de acuerdo al ranked.
+
+Quinta parte
+
+Ya podemos arrastrar las imagenes y soltarlas para rankear, incluso se puede ver una previsualizacion de la misma.
+Tambien podemos regresar la imagen al cuadro.

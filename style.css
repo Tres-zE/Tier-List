@@ -55,6 +55,12 @@ body {
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #111;
+  transition: all 0.3s ease;
+
+  &.drag-over {
+    background: #555;
+    scale: 1.01;
+  }
 }
 
 .label {
@@ -123,4 +129,9 @@ body {
   object-fit: cover;
   background: #fff;
   cursor: grab;
+
+  &.drag-preview {
+    opacity: 0.5;
+    pointer-events: none; /* Evita que la vista previa sea interactiva */
+  }
 }
