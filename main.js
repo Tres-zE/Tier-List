@@ -23,6 +23,8 @@ const $$ = (el) => document.querySelectorAll(el);
 
 const imageInput = $('#image-input');
 const itemsSection = $('#selector-items');
+const resetTierButton = $('#reset-tier-button');
+const saveTierButton = $('#save-tier-button');
 
 function createItem(src) {
   const imgElement = document.createElement('img'); // Crea un nuevo elemento de imagen.
@@ -37,18 +39,25 @@ function createItem(src) {
   return imgElement; // Devuelve el elemento de imagen creado para su posible uso posterior.
 }
 
+function userFilesToCreateItems(files) {
+  if (files && files.length > 0) {
+    // Verifica si se ha seleccionado un archivo y si hay archivos disponibles.
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader(); // Crea un nuevo objeto FileReader para leer el archivo.
+
+      reader.onload = (eventReader) => {
+        createItem(eventReader.target.result); // Cuando la lectura del archivo se complete, crea un nuevo elemento de imagen con la fuente del archivo leído.
+      };
+
+      reader.readAsDataURL(file); // Lee el archivo como una URL de datos (data URL).
+    });
+  }
+}
+
 // Esta función se ejecuta cuando el usuario selecciona una imagen desde su dispositivo.
 imageInput.addEventListener('change', (event) => {
-  const [file] = event.target.files; // Obtiene el primer archivo seleccionado por el usuario.
-  if (file) {
-    const reader = new FileReader(); // Crea un nuevo objeto FileReader para leer el archivo.
-
-    reader.onload = (eventReader) => {
-      createItem(eventReader.target.result); // Cuando la lectura del archivo se complete, crea un nuevo elemento de imagen con la fuente del archivo leído.
-    };
-
-    reader.readAsDataURL(file); // Lee el archivo como una URL de datos (data URL).
-  }
+  const { files } = event.target; // Obtiene el primer archivo seleccionado por el usuario.
+  userFilesToCreateItems(files); // Llama a la función para crear elementos de imagen a partir de los archivos seleccionados.
 });
 
 let draggedElement = null; // Variable para almacenar el elemento que se está arrastrando.
@@ -65,6 +74,30 @@ rows.forEach((row) => {
 itemsSection.addEventListener('dragover', handleDragOver); // Agrega un evento para manejar el evento de arrastrar sobre (dragover) en la sección de elementos.
 itemsSection.addEventListener('drop', handleDrop); // Agrega un evento para manejar el evento de soltar (drop) en la sección de elementos.
 itemsSection.addEventListener('dragleave', handleDragLeave); // Agrega un evento para manejar el evento de salir del arrastre (dragleave) en la sección de elementos.
+
+itemsSection.addEventListener('drop', handleDropFromDesktop); // Agrega un evento para manejar el evento de soltar (drop) desde el escritorio en la sección de elementos.
+itemsSection.addEventListener('dragover', handleDragOverFromDesktop); // Agrega un evento para manejar el evento de arrastrar sobre (dragover) en la sección de elementos.
+
+function handleDragOverFromDesktop(event) {
+  event.preventDefault(); // Previene el comportamiento predeterminado del navegador al arrastrar un elemento sobre otro.
+  const { currentTarget, dataTransfer } = event; // Obtiene el elemento actual sobre el que se está arrastrando.
+
+  if (dataTransfer.types.includes('Files')) {
+    // Verifica si los datos del arrastre incluyen archivos.
+    currentTarget.classList.add('drag-files'); // Agrega una clase CSS para indicar que el contenedor está listo para recibir un elemento arrastrado.
+  }
+}
+
+function handleDropFromDesktop(event) {
+  event.preventDefault(); // Previene el comportamiento predeterminado del navegador al soltar un elemento.
+  const { currentTarget, dataTransfer } = event; // Obtiene el elemento actual donde se suelta el elemento arrastrado.
+
+  if (dataTransfer.types.includes('Files')) {
+    currentTarget.classList.remove('drag-files'); // Elimina la clase CSS que indica que el contenedor está listo para recibir un elemento arrastrado.
+    const { files } = dataTransfer; // Obtiene los archivos arrastrados desde el escritorio.
+    userFilesToCreateItems(files); // Llama a la función para crear elementos de imagen a partir de los archivos arrastrados.
+  }
+}
 
 function handleDrop(event) {
   event.preventDefault(); // Previene el comportamiento predeterminado del navegador al soltar un elemento.
@@ -121,3 +154,30 @@ function handleDragEnd(event) {
   draggedElement = null; // Limpia la variable al finalizar el arrastre.
   sourceContainer = null; // Limpia el contenedor de origen al finalizar el arrastre.
 }
+
+resetTierButton.addEventListener('click', () => {
+  const items = $$('.tier .item-image'); // Selecciona todas las imágenes en las filas de la clase 'tier item-image'.
+  items.forEach((item) => {
+    item.remove(); // Elimina cada imagen del DOM.
+
+    itemsSection.appendChild(item); // Regresa cada imagen al contenedor de elementos.
+  });
+});
+
+saveTierButton.addEventListener('click', () => {
+  const tierContainer = $('.tier'); // Selecciona el contenedor de la clase 'tier'.
+  const canvas = document.createElement('canvas'); // Crea un nuevo elemento de lienzo (canvas).
+  const ctx = canvas.getContext('2d'); // Obtiene el contexto de dibujo del lienzo.
+
+  import('https://cdn.jsdelivr.net/npm/html2canvas-pro@1.5.8/+esm') // Importa dinámicamente la biblioteca html2canvas desde un CDN.
+    .then(({ default: html2canvas }) => {
+      html2canvas(tierContainer).then((canvas) => {
+        ctx.drawImage(canvas, 0, 0); // Dibuja el contenido del contenedor 'tier' en el lienzo.
+        const imgURL = canvas.toDataURL('image/png'); // Convierte el contenido del lienzo a una URL de imagen en formato PNG.
+        const dowloadLink = document.createElement('a'); // Crea un enlace para descargar la imagen.
+        dowloadLink.download = 'tier.png'; // Establece el nombre del archivo a descargar.
+        dowloadLink.href = imgURL; // Establece la URL de la imagen como el destino del enlace.
+        dowloadLink.click(); // Simula un clic en el enlace para iniciar la descarga.
+      });
+    });
+});

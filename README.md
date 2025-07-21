@@ -68,4 +68,14 @@ Por el momento ya se puede seleccionar, arrastrar y colocar las donde queramos d
 Quinta parte
 
 Ya podemos arrastrar las imagenes y soltarlas para rankear, incluso se puede ver una previsualizacion de la misma.
-Tambien podemos regresar la imagen al cuadro.
+Tambien podemos regresar la imagen al lugar donde se 'guardan' las imagenes selecionadas, es decir, que las regresamos al contenedor.
+
+Sexta parte.
+
+Aqui modificamos el codigo para que podamos seleccionar diferentes imagenes. Esto lo hacemos desde imageInput, ya que solo se puede cargar una imagen.
+Tambien vamos a hacer que el boton de reset funcione para que limpie o borre las imagenes, es decir, que las regrese al contenedor.
+Ademas añadimos funciones para que al momento de seleccionar varias imagenes desde los archivos, los podamos arrastrar y soltar en el contenedor.
+Añadimos una funcion que haga una captura de pantalla pero solo del tier-list.
+Para esto usamos una dependencia de cdnjs.com/libraries/html2canvas y usaremos algo llamado import dinamico. Ademas de agregar un boton de guardar para que al momento de darle click, nos genere la captua de pantalla y se guarde en la galeria.
+Algunas dependecias estan desactualizadas, es importante verificar cual es la que funciona.
+Una vez hecho la funcion, ya se puede tomar la captura de pantalla con el boton de guardar.
